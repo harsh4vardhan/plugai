@@ -1,58 +1,43 @@
 <section class="w-full">
-    <x-marketing.elements.heading level="h2" title="Oceans of Approval" description="Find out why users are on board with Wave, through their own words and success tales." />
+    <x-marketing.elements.heading level="h2" title="Supported By" description="Access leading AI models through our unified API, with standardized parameters and seamless integration. Grok support coming soon!" />
     <ul role="list" class="grid grid-cols-1 gap-12 py-12 mx-auto max-w-2xl lg:max-w-none lg:grid-cols-3">
         <li>
             <figure class="flex flex-col justify-between h-full">
-                <blockquote class="">
-                    <p class="text-sm sm:text-base font-medium text-zinc-500">
-                        Wave's ready-to-use features sped up our launch significantly. Its authentication and subscription tools are particularly impressive and user-friendly.
+                <div class="">
+                    <h3 class="font-medium text-zinc-900">Open AI</h3>
+                    <p class="mt-2 text-sm sm:text-base font-medium text-zinc-500">
+                        Leverage Open AI's powerful language models like ChatGPT through our single API key, simplifying integration and scaling.
                     </p>
-                </blockquote>
-                <figcaption class="flex flex-col justify-between mt-6">
-                    <img alt="#_" src="https://cdn.devdojo.com/images/june2024/adam.jpeg" class="object-cover rounded-full grayscale size-14">
-                    <div class="mt-4">
-                        <div class="font-medium text-zinc-900">Adam Wathan</div>
-                        <div class="mt-1 text-sm text-zinc-500">
-                            Creator of Tailwind CSS
-                        </div>
-                    </div>
-                </figcaption>
+                </div>
+                <div class="mt-6">
+                    <img alt="Open AI" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/OpenAI_Logo.svg/200px-OpenAI_Logo.svg.png" class=" grayscale size-18">
+                </div>
             </figure>
         </li>
         <li>
             <figure class="flex flex-col justify-between h-full">
-                <blockquote class="">
-                    <p class="text-sm sm:text-base font-medium text-zinc-500">
-                        Wave transformed our development workflow with its excellent API and profile management, saving us valuable time.
+                <div class="">
+                    <h3 class="font-medium text-zinc-900">Gemini</h3>
+                    <p class="mt-2 text-sm sm:text-base font-medium text-zinc-500">
+                        Integrate Google's Gemini models effortlessly with our unified API, ensuring consistent parameters and rapid deployment.
                     </p>
-                </blockquote>
-                <figcaption class="flex flex-col justify-between mt-6">
-                    <img alt="#_" src="https://cdn.devdojo.com/images/june2024/caleb.jpeg" class="object-cover rounded-full grayscale size-14">
-                    <div class="mt-4">
-                        <div class="font-medium text-zinc-900">Caleb Porzio</div>
-                        <div class="mt-1 text-sm text-zinc-500">
-                            Creator of Livewire & Alpine
-                        </div>
-                    </div>
-                </figcaption>
+                </div>
+                <div class="mt-6">
+                    <img alt="Gemini" src="https://static.cdnlogo.com/logos/g/69/google-gemini.svg" class=" grayscale size-16">
+                </div>
             </figure>
         </li>
         <li>
             <figure class="flex flex-col justify-between h-full">
-                <blockquote class="">
-                    <p class="text-sm sm:text-base font-medium text-zinc-500">
-                        Wave is an amazing SaaS Starter kit. The team here are Laravel leverages Wave all the time for many projects.
+                <div class="">
+                    <h3 class="font-medium text-zinc-900">Anthropic</h3>
+                    <p class="mt-2 text-sm sm:text-base font-medium text-zinc-500">
+                        Use Anthropic's Claude models via our streamlined API, optimizing workflows with universal access and configuration.
                     </p>
-                </blockquote>
-                <figcaption class="flex flex-col justify-between mt-6">
-                    <img alt="#_" src="https://cdn.devdojo.com/images/june2024/taylor.jpeg" class="object-cover rounded-full grayscale size-14">
-                    <div class="mt-4">
-                        <div class="font-medium text-zinc-900">Taylor Otwell</div>
-                        <div class="mt-1 text-sm text-zinc-500">
-                            Founder and Creator of Laravel
-                        </div>
-                    </div>
-                </figcaption>
+                </div>
+                <div class="mt-6">
+                    <img alt="Anthropic" src="https://static.cdnlogo.com/logos/a/69/anthropic_800x800.png" class="object-cover  grayscale size-14">
+                </div>
             </figure>
         </li>
     </ul>

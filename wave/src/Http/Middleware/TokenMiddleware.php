@@ -3,44 +3,37 @@
 namespace Wave\Http\Middleware;
 
 use Closure;
-//use Illuminate\Support\Facades\Auth;
-use Wave\ApiToken;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
-use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Support\Facades\Auth;
+use Wave\ApiKey;
 
 class TokenMiddleware
 {
-
-    protected $auth;
-
-    public function __construct(Auth $auth)
-    {
-        $this->auth = $auth;
-    }
-
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if($request->token && strlen($request->token) <= 60){
-            $api_token = ApiToken::where('token', '=', $request->token)->first();
-            if(isset($api_token->id)){
-                $token = JWTAuth::fromUser($api_token->user);
-            }
+        // Get the token from Authorization header (Bearer token)
+        $bearerToken = $request->bearerToken();
 
-        } else {
-            $this->auth->authenticate();
+        if (!$bearerToken) {
+            return response()->json(['error' => true, 'message' => 'Missing API token'], 401);
         }
 
+        // Look up the API token
+        $apiToken = ApiKey::where('key', $bearerToken)->first();
 
-        //Then process the next request if every tests passed.
+        if (!$apiToken || !$apiToken->user) {
+            return response()->json(['error' => true, 'message' => 'Invalid API token'], 401);
+        }
+
+        // Set the authenticated user in the request
+        Auth::setUser($apiToken->user);
+
         return $next($request);
     }
 }

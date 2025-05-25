@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\UsageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AIModelController;
+
 
 Route::impersonate();
 
@@ -30,7 +33,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('subscribe', '\Wave\Http\Controllers\SubscriptionController@subscribe')->name('wave.subscribe');
     Route::post('switch-plans', '\Wave\Http\Controllers\SubscriptionController@switchPlans')->name('wave.switch-plans');
+
+    Route::get('/ai-models', [AIModelController::class, 'index']);
+    Route::post('/ai-models', [AIModelController::class, 'store']);
+    Route::delete('/ai-models/{id}', [AIModelController::class, 'destroy']);
+    Route::get('/models/{id}/stats', [\App\Http\Controllers\StatsController::class, 'modelStats']);
 });
+Route::middleware(['auth'])->get('/api/usage', [UsageController::class, 'index']);
 
 Route::get('wave/theme/image/{theme_name}', '\Wave\Http\Controllers\ThemeImageController@show');
 Route::get('wave/plugin/image/{plugin_name}', '\Wave\Http\Controllers\PluginImageController@show');

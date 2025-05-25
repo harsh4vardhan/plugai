@@ -4,7 +4,6 @@
     <x-container>
         <div class="flex flex-wrap items-start justify-between pb-20">
             <a href="#_" class="flex items-center w-auto mt-1 text-lg font-bold transition-all duration-300 ease-out brightness-0 md:w-1/6 hover:brightness-100">
-                <x-logo class="flex-shrink-0 w-auto h-8"></x-logo>
             </a>
             <div class="grid w-full grid-cols-2 pt-2 mt-20 gap-y-16 sm:grid-cols-4 lg:gap-x-8 md:w-5/6 md:mt-0 md:pr-6">
                 <div class="md:justify-self-end">
@@ -134,13 +133,6 @@
 
         <div class="flex flex-col items-center justify-between py-10 border-t border-solid lg:flex-row border-gray">
             <ul class="flex flex-wrap space-x-5 text-xs">
-                <li class="mb-6 text-center flex-full lg:flex-none lg:mb-0">&copy; {{ date('Y') }} {{ setting('site.title', 'Laravel Wave') }}, Inc. All rights reserved.</li>
-                <li class="lg:ml-6">
-                    <a href="#_" class="relative inline-block text-black group">
-                        <span class="absolute bottom-0 w-full transition duration-150 ease-out transform -translate-y-1 border-b border-black opacity-0 group-hover:opacity-100 group-hover:translate-y-0"></span>
-                        <span>Privacy Policy</span>
-                    </a>
-                </li>
                 <li class="ml-auto mr-auto text-center lg:ml-6 lg:mr-0">
                     <a href="#_" class="relative inline-block text-black group">
                         <span class="absolute bottom-0 w-full transition duration-150 ease-out transform -translate-y-1 border-b border-black opacity-0 group-hover:opacity-100 group-hover:translate-y-0"></span>

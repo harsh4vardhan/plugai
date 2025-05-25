@@ -4,7 +4,9 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -46,5 +48,27 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e): \Symfony\Component\HttpFoundation\Response
+    {
+        if ($request->expectsJson()) {
+            $status = 500;
+            $message = $e->getMessage();
+
+            if ($e instanceof NotFoundHttpException) {
+                $status = 404;
+                $message = 'API route not found.';
+            }
+
+            return response()->json([
+                'error' => true,
+                'message' => $message,
+                'exception' => config('app.debug') ? get_class($e) : null,
+                'trace' => config('app.debug') ? $e->getTrace() : [],
+            ], $status);
+        }
+
+        return parent::render($request, $e);
     }
 }
