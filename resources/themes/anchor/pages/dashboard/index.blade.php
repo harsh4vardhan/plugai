@@ -38,7 +38,7 @@
                             <span class="truncate">API Key: <span class="font-semibold" x-text="model.api_key.substring(0, 4) + '...'+ model.api_key.substring(model.api_key.length - 4)"></span></span>
                             <button @click.stop="copyApiKey(model.id, model.api_key)" :class="{ 'text-blue-500': model.copied, 'text-gray-400 hover:text-blue-500': !model.copied }" class="ml-2 p-1 rounded transition duration-200" :title="model.copied ? 'Copied!' : 'Copy API Key'">
                                 <span x-show="!model.copied">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M14 4h2a2 2 0 012 2v2m-6 3l-4 4m0 0l-4 4m4-4l4 4m0 0l4 4m-4-4V4"></path></svg>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M14 4h2a2 0 012 2v2m-6 3l-4 4m0 0l-4 4m4-4l4 4m0 0l4 4m-4-4V4"></path></svg>
                                 </span>
                                 <span x-show="model.copied">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
@@ -98,9 +98,9 @@
         </div>
 
         {{-- Usage Stats Modal --}}
-        <div x-show="showStatsModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        <div x-data="{ showForm: false, newApiForm: { name: '', prompt: '', max_tokens: '', temperature: '', tag: '' , provider: '' }, currentApiModelOptions: [] }" x-show="showStatsModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
              class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-70 flex items-center justify-center p-4">
-            <div @click.away="closeStatsModal" class="bg-white rounded-2xl shadow-xl w-full max-w-5xl h-auto max-h-[90vh] flex flex-col transform transition-all duration-300 ease-in-out">
+            <div @click.away="closeStatsModal" class="bg-white rounded-2xl shadow-xl w-full max-w-5xl h-auto max-h-full flex flex-col transform transition-all duration-300 ease-in-out">
                 <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
                     <h2 class="text-xl font-bold text-gray-800">Usage Stats - <span class="text-indigo-600" x-text="selectedModel?.name"></span></h2>
                     <button @click="closeStatsModal" class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1.5 transition-colors">
@@ -132,7 +132,198 @@
                                 <svg class="w-12 h-12 text-yellow-400 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3m0 0l3 3m-3-3v8m0-9a9 9 0 110 18A9 9 0 017 12z"></path></svg>
                             </div>
                         </div>
+                        <button @click="showForm = !showForm; if(showForm) { newApiForm.provider = ''; newApiForm.name = ''; currentApiModelOptions = []; }"
+                                class="ml-4 inline-flex items-center px-4 py-2 my-4 border border-indigo-600 text-indigo-600 text-sm font-medium rounded-lg hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Add API
+                        </button>
+                        <div x-show="showForm" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                             class="mt-8 bg-white border border-gray-200 rounded-xl p-6 shadow-md relative">
+                            <button @click="showForm = false"
+                                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-full p-1.5 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
 
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Add New API Configuration</h3> {{-- Adjusted text size --}}
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4"> {{-- Adjusted gap classes for better spacing --}}
+                                <div>
+                                    <label for="new-api-provider" class="block text-sm font-medium text-gray-700">Provider</label>
+                                    <select id="new-api-provider" x-model="newApiForm.provider" @change="currentApiModelOptions = modelOptions[newApiForm.provider] || []; newApiForm.name = '';"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2 text-sm">
+                                        <option value="" disabled selected>Select Provider</option>
+                                        <template x-for="providerKey in Object.keys(modelOptions)" :key="providerKey">
+                                            <option :value="providerKey" x-text="providerKey.charAt(0).toUpperCase() + providerKey.slice(1)"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="new-api-model-name" class="block text-sm font-medium text-gray-700">Model Name</label>
+                                    <select id="new-api-model-name" x-model="newApiForm.name"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2 text-sm">
+                                        <option value="" disabled selected>Select Model</option>
+                                        <template x-for="modelName in currentApiModelOptions" :key="modelName">
+                                            <option :value="modelName" x-text="modelName"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2"> {{-- Make prompt span full width for better layout --}}
+                                    <label for="new-api-prompt" class="block text-sm font-medium text-gray-700">Base Prompt</label>
+                                    <textarea id="new-api-prompt" x-model="newApiForm.prompt" rows="3"
+                                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2 text-sm" placeholder="e.g., You are a highly intelligent and helpful AI assistant."></textarea>
+                                </div>
+                                <div>
+                                    <label for="new-api-max-tokens" class="block text-sm font-medium text-gray-700">Max Tokens</label>
+                                    <input type="number" id="new-api-max-tokens" x-model="newApiForm.max_tokens"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2 text-sm" placeholder="e.g., 2048"/>
+                                </div>
+                                <div>
+                                    <label for="new-api-temperature" class="block text-sm font-medium text-gray-700">Temperature</label>
+                                    <input type="number" step="0.01" id="new-api-temperature" x-model="newApiForm.temperature"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2 text-sm" placeholder="e.g., 0.7"/>
+                                </div>
+                                <div>
+                                    <label for="new-api-tag" class="block text-sm font-medium text-gray-700">Api tag</label>
+                                    <input type="text" id="new-api-tag" x-model="newApiForm.tag"
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2 text-sm" placeholder="tag to be used in your api call"/>
+                                </div>
+                            </div>
+
+                            <div class="pt-6 text-right"> {{-- Adjusted padding for better spacing --}}
+                                <button @click="submitNewApiConfiguration"
+                                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium text-base rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V9m-7 4l-3-3m0 0l3-3m-3 3h8m-7 4v-3m0 0V9a2 2 0 012-2h2a2 2 0 012 2v4"></path>
+                                    </svg>
+                                    Save API Configuration
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow my-4">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Endpoints</h3>
+
+                            <template x-if="userApis.length === 0">
+                                <p class="text-gray-500 text-sm">No APIs found.</p>
+                            </template>
+
+                            <template x-for="(api, index) in userApis.filter(api => api.provider === selectedProvider)" :key="api.id">
+                                <div  class="border rounded-lg mb-4 overflow-hidden">
+                                    <button @click="api.expanded = !api.expanded"
+                                            class="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-200">
+                                        <span class="font-medium text-gray-700" x-text="api.tag || 'Untitled API'"></span>
+                                        <svg :class="{ 'rotate-180': api.expanded }" class="w-5 h-5 transition-transform"
+                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </button>
+                                    <div x-show="api.expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90" class="bg-white p-6 rounded-lg shadow-xl">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                                            <!-- Provider -->
+                                            <div class="col-span-1">
+                                                <label class="block text-sm font-semibold text-gray-700 mb-1">Provider</label>
+
+                                                <div x-show="!api.editingProvider" class="flex items-center justify-between">
+                                                    <span class="text-gray-800" x-text="api.provider || 'Not set'"></span>
+                                                    <button @click="api.editingProvider = true" class="text-sm text-indigo-600 hover:underline ml-2">Edit</button>
+                                                </div>
+
+                                                <div x-show="api.editingProvider" class="flex items-center space-x-2 mt-1">
+                                                    <select x-model="api.provider"
+                                                            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2">
+                                                        <template x-for="(models, provider) in modelOptions" :key="provider">
+                                                            <option :value="provider" x-text="provider.charAt(0).toUpperCase() + provider.slice(1)"></option>
+                                                        </template>
+                                                    </select>
+                                                    <button @click="api.editingProvider = false" class="text-sm text-gray-600">Done</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Model -->
+                                            <div class="col-span-1">
+                                                <label class="block text-sm font-semibold text-gray-700 mb-1">Model</label>
+
+                                                <!-- Viewing mode -->
+                                                <template x-if="!api.editingModel">
+                                                    <div class="flex items-center justify-between">
+                                                        <span x-text="api.mode_name" class="text-gray-800 font-medium"></span>
+                                                        <button @click="api.temp_mode_name = api.mode_name; api.editingModel = true" class="ml-2 text-indigo-600 text-sm hover:underline">
+                                                            Edit
+                                                        </button>
+                                                    </div>
+                                                </template>
+
+                                                <!-- Editing mode -->
+                                                <template x-if="api.editingModel">
+                                                    <div class="flex items-center space-x-2">
+                                                        <select x-model="api.temp_mode_name"
+                                                                class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2">
+                                                            <template x-for="modelName in (modelOptions[api.provider] || [])" :key="modelName">
+                                                                <option :value="modelName" x-text="modelName"></option>
+                                                            </template>
+                                                        </select>
+                                                        <button @click="api.mode_name = api.temp_mode_name; api.editingModel = false"
+                                                                class="text-sm text-green-600 hover:underline">Save</button>
+                                                        <button @click="api.editingModel = false"
+                                                                class="text-sm text-gray-500 hover:underline">Cancel</button>
+                                                    </div>
+                                                </template>
+                                            </div>
+
+                                            <div class="col-span-1">
+                                                <label :for="`prompt-input-${api.id}`" class="block text-sm font-semibold text-gray-700 mb-1">Prompt</label>
+                                                <input type="text" :id="`prompt-input-${api.id}`" x-model="api.prompt" placeholder="Enter your prompt here..." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2" />
+                                            </div>
+
+                                            <div class="col-span-1">
+                                                <label :for="`tag-input-${api.id}`" class="block text-sm font-semibold text-gray-700 mb-1">Tag</label>
+                                                <input type="text" :id="`tag-input-${api.id}`" x-model="api.tag" placeholder="Add a tag..." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2" />
+                                            </div>
+
+                                            <div class="col-span-1">
+                                                <label :for="`temperature-range-${api.id}`" class="block text-sm font-semibold text-gray-700 mb-1">Temperature</label>
+                                                <input type="range" :id="`temperature-range-${api.id}`" min="0" max="2" step="0.1" x-model="api.temperature" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" />
+                                                <div class="text-sm text-gray-500 mt-2">Value: <span class="font-medium text-indigo-600" x-text="api.temperature ?? '0.0'"></span></div>
+                                            </div>
+
+                                            <div class="col-span-1">
+                                                <label :for="`max-tokens-range-${api.id}`" class="block text-sm font-semibold text-gray-700 mb-1">Max Tokens</label>
+                                                <input type="range" :id="`max-tokens-range-${api.id}`" min="1" max="4000" step="1" x-model="api.max_tokens" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" />
+                                                <div class="text-sm text-gray-500 mt-2">Value: <span class="font-medium text-indigo-600" x-text="api.max_tokens"></span></div>
+                                            </div>
+
+                                            <div class="col-span-1">
+                                                <label class="block text-sm font-semibold text-gray-700 mb-1">API Count</label>
+                                                <div class="text-base text-gray-800 font-medium py-2 px-3 rounded-md bg-gray-50 border border-gray-200">
+                                                    <span x-text="api.api_count"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-span-1">
+                                                <label class="block text-sm font-semibold text-gray-700 mb-1">Tokens Used</label>
+                                                <div class="text-base text-gray-800 font-medium py-2 px-3 rounded-md bg-gray-50 border border-gray-200">
+                                                    <span x-text="api.tokens_used"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-right mt-8 pt-4 border-t border-gray-200">
+                                            <button @click="updateApi(api)" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                                                Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
                         <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                             <h3 class="font-semibold text-lg text-gray-800 mb-4">Daily Usage Trend (Requests)</h3>
                             <div class="relative h-60"> <canvas id="usageChart"></canvas>
@@ -159,24 +350,116 @@
         return {
             showModal: false,
             models: [],
-            form: {
+            form: { // Used for 'Add New AI Model' modal
                 name: '',
                 type: '',
                 api_key: ''
             },
-            availableModels: [],
+            // newApiForm and currentApiModelOptions are now part of the main scope for the 'Add API Configuration' form
+            showForm: false, // Controls visibility of the 'Add API Configuration' form within the stats modal
+            newApiForm: { // Used for the 'Add API Configuration' form within the stats modal
+                name: '',
+                prompt: '',
+                max_tokens: '',
+                temperature: '',
+                tag: '' ,
+                provider: ''
+            },
+            currentApiModelOptions: [], // For the 'Add API Configuration' form
+
+            availableModels: [], // For the 'Add New AI Model' modal
 
             modelOptions: {
                 openai: ['gpt-3.5-turbo', 'gpt-4', 'gpt-4o', 'dall-e-3'],
                 gemini: ['gemini-pro', 'gemini-1.5-pro', 'gemini-2.0-flash'],
                 anthropic: ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307']
             },
+            userApis: [],
+            fetchUserApis() {
+                // Fetch APIs for the selected model
+                if (!this.selectedModel) return;
+
+                // You might need an actual endpoint like /user-api?model_id={id}
+                // or /models/{id}/user-apis if your backend is structured that way
+                fetch(`/user-api`) // Assuming an endpoint to fetch APIs for a specific model
+                    .then(res => {
+                        if (!res.ok) throw new Error('Failed to fetch user APIs for model.');
+                        return res.json();
+                    })
+                    .then(data => {
+                        this.userApis = data.map(api => ({
+                            ...api,
+                            expanded: false,
+                            provider: api.provider,
+                            // Ensure mode_name is set, default to empty string if null/undefined
+                            mode_name: api.mode_name || '',
+                            editingProvider: false,
+                            editingModel: false,
+                            temp_mode_name: '', // ← we’ll use this,
+                        }));
+                        console.log('User APIs loaded:', this.userApis);
+
+                    })
+                    .catch(error => {
+                        console.error('Error loading user APIs:', error);
+                        alert('Failed to load user APIs.');
+                    });
+            },
+
+            async updateApi(api) {
+                // Apply temporary values if in edit mode
+                if (api.editingModel) {
+                    api.mode_name = api.temp_mode_name;
+                    api.editingModel = false;
+                }
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                };
+
+                const payload = {
+                    provider: api.provider,
+                    tag: api.tag,
+                    prompt: api.prompt,
+                    temperature: api.temperature,
+                    tokens_used: api.tokens_used,
+                    api_count: api.api_count,
+                    max_tokens: api.max_tokens,
+                    mode_name: api.mode_name
+                };
+                console.log('Updating API:', payload);
+                try {
+                    const res = await fetch(`/user-api/${api.id}`, {
+                        method: 'PUT',
+                        headers,
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!res.ok) {
+                        const errorData = await res.json();
+                        throw new Error(errorData.message || 'Update failed.');
+                    }
+
+                    alert('API updated successfully.');
+                } catch (error) {
+                    console.error('Update failed:', error);
+                    alert('Failed to update API: ' + error.message);
+                }
+            }
+
+            ,
 
             async init() {
                 if (typeof Chart === 'undefined') {
                     console.error('Chart.js is not loaded.');
                     return;
                 }
+                // Initial update for the 'Add New AI Model' modal provider
+                this.updateModelOptions();
+
                 try {
                     const res = await fetch('/ai-models');
                     if (!res.ok) {
@@ -192,11 +475,17 @@
             selectedModel: null,
             stats: null,
             usageChartInstance: null,
-
+            selectedProvider: null,
             async viewStats(model) {
                 this.selectedModel = model;
                 this.showStatsModal = true;
                 this.stats = null; // Clear previous stats to show loading state
+                this.showForm = false; // Hide the add API form initially
+                this.newApiForm = { name: '', prompt: '', max_tokens: '', temperature: '', tag: '' , provider: ''}; // Reset new API form
+                this.currentApiModelOptions = []; // Clear model options for the new API form
+                this.selectedProvider = model.provider;
+                // Fetch APIs specific to this model
+                this.fetchUserApis();
 
                 // Destroy previous chart instance if it exists
                 if (this.usageChartInstance) {
@@ -242,6 +531,10 @@
                 this.showStatsModal = false;
                 this.stats = null;
                 this.selectedModel = null;
+                this.userApis = []; // Clear user APIs when closing
+                this.showForm = false; // Hide add API form
+                this.newApiForm = { name: '', prompt: '', max_tokens: '', temperature: '', tag: '' , provider: ''}; // Reset new API form
+                this.currentApiModelOptions = []; // Clear model options for the new API form
                 if (this.usageChartInstance) {
                     this.usageChartInstance.destroy();
                     this.usageChartInstance = null;
@@ -346,7 +639,7 @@
 
             openModal() {
                 this.showModal = true;
-                this.form.type = 'openai';
+                this.form.type = 'openai'; // Default provider for new AI model
                 this.updateModelOptions();
             },
 
@@ -356,23 +649,36 @@
                 this.availableModels = [];
             },
 
+            // This method is for the 'Add New AI Model' modal
             updateModelOptions() {
+                console.log('reached here in updateModelOptions');
                 this.availableModels = this.modelOptions[this.form.type] || [];
                 this.form.name = this.availableModels.length > 0 ? this.availableModels[0] : '';
             },
 
-            async submitModel() {
+            // This method is for the 'Add New API Configuration' form within the stats modal
+            async submitNewApiConfiguration() {
                 try {
                     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                    const headers = { 'Content-Type': 'application/json' };
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    };
                     if (csrfToken) {
                         headers['X-CSRF-TOKEN'] = csrfToken;
                     }
 
-                    const res = await fetch('/ai-models', {
+                    // Add the model_id of the currently selected AI model
+                    const payload = {
+                        ...this.newApiForm,
+                        model_id: this.selectedModel.id // Associate the new API config with the currently viewed model
+                    };
+
+                    const res = await fetch('/user-api', {
                         method: 'POST',
                         headers: headers,
-                        body: JSON.stringify(this.form)
+                        body: JSON.stringify(payload)
                     });
 
                     if (!res.ok) {
@@ -380,12 +686,15 @@
                         throw new Error(error.message || 'Something went wrong');
                     }
 
-                    const newModel = await res.json();
-                    this.models.push({ ...newModel, copied: false }); // Ensure new models also have the 'copied' state
-                    this.closeModal();
+                    const newApi = await res.json();
+                    this.userApis.push({ ...newApi, expanded: false }); // Add the new API to the list of APIs for the current model
+                    this.showForm = false; // Hide the form
+                    this.newApiForm = { name: '', prompt: '', max_tokens: '', temperature: '', tag: '' , provider: ''}; // Reset the form
+                    this.currentApiModelOptions = []; // Clear model options for the new API form
+                    alert('API configuration saved successfully!');
                 } catch (error) {
-                    alert('Error adding model: ' + error.message);
-                    console.error('Error adding model:', error);
+                    alert('Error saving API configuration: ' + error.message);
+                    console.error('Error saving API configuration:', error);
                 }
             },
 
@@ -414,6 +723,34 @@
                 } catch (error) {
                     alert('Error removing model: ' + error.message);
                     console.error('Error removing model:', error);
+                }
+            },
+
+            async submitModel() {
+                try {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (csrfToken) {
+                        headers['X-CSRF-TOKEN'] = csrfToken;
+                    }
+
+                    const res = await fetch('/ai-models', {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(this.form)
+                    });
+
+                    if (!res.ok) {
+                        const error = await res.json();
+                        throw new Error(error.message || 'Something went wrong');
+                    }
+
+                    const newModel = await res.json();
+                    this.models.push({ ...newModel, copied: false }); // Ensure new models also have the 'copied' state
+                    this.closeModal();
+                } catch (error) {
+                    alert('Error adding model: ' + error.message);
+                    console.error('Error adding model:', error);
                 }
             },
 

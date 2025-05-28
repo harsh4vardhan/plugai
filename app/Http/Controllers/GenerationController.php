@@ -5,23 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\AIModel;
 use App\Models\ApiRequestLog;
 use App\Models\RequestLog;
+use App\Services\UserApiParameters;
 use Illuminate\Http\Request;
 use App\Services\GeneratorFactory;
 use Illuminate\Support\Facades\Auth;
 
 class GenerationController extends Controller
 {
-    public function __construct(protected GeneratorFactory $factory) {}
+    public function __construct(protected GeneratorFactory $factory, protected UserApiParameters $apiParamsService) {}
 
 
     public function generate(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'prompt' => 'required|string',
-            'max_tokens' => 'nullable|integer',
-            'temperature' => 'nullable|numeric',
+            'tag' => 'required|string',
         ]);
+
+        $request->merge($this->apiParamsService->getUserApiParameters($request->tag));
 
         $model = AIModel::where('name', $request->name)
             ->where('user_id', Auth::id())

@@ -3,6 +3,7 @@
 use App\Http\Controllers\UsageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AIModelController;
+use App\Http\Controllers\UserApiTypeController;
 
 
 Route::impersonate();
@@ -38,7 +39,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/ai-models', [AIModelController::class, 'store']);
     Route::delete('/ai-models/{id}', [AIModelController::class, 'destroy']);
     Route::get('/models/{id}/stats', [\App\Http\Controllers\StatsController::class, 'modelStats']);
+
+    Route::get('/user-api', [UserApiTypeController::class, 'index']);
+    Route::post('/user-api', [UserApiTypeController::class, 'store']);
+    Route::get('/user-api/{userApiType}', [UserApiTypeController::class, 'show']);
+    Route::put('/user-api/{userApiType}', [UserApiTypeController::class, 'update']);
+    Route::delete('/user-api/{userApiType}', [UserApiTypeController::class, 'destroy']);
 });
+
 Route::middleware(['auth'])->get('/api/usage', [UsageController::class, 'index']);
 
 Route::get('wave/theme/image/{theme_name}', '\Wave\Http\Controllers\ThemeImageController@show');
